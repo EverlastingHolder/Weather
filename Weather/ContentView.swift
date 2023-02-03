@@ -6,25 +6,19 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             List {
-                ForEach(viewModel.weatherApi, id:\.key) { (key, value) in
+                ForEach(viewModel.weather, id:\.id) { item in
                     Button(action: {
                         withAnimation() {
-//                            viewModel.selectedItem.removeAll()
-//                            viewModel.selectedItem.append((key: key, value: value))
-//                            viewModel.selectedItem[key] = value
-                            viewModel.selectedItem = value
-//                            viewModel.weatherApi = viewModel.weatherApi.filter { $0.key != viewModel.selectedItem[0].key }
-//                            let index = viewModel.weatherApi.firstIndex(where: { $0.key == viewModel.selectedItem[0].key })
-//                            viewModel.weatherApi.insert(contentsOf: viewModel.selectedItem, at: index ?? 0)
+                            viewModel.selectedItem = item
+                            viewModel.moveToTop()
                         }
                     }) {
                         VStack(alignment: .leading, spacing: 8) {
-                            selectedRow(item: value)
-                            defaultRow(item: value)
+                            selectedRow(item: item)
+                            defaultRow(item: item)
                         }
                     }
-                    .padding(.vertical)
-                    .listRowBackground(viewModel.selectedItem?.id == key ? tempColor(temp: value.main.temp) : .clear)
+                    .listRowBackground(viewModel.selectedItem?.id == item.id ? Color.blue.animation(.default) : Color.clear.animation(.default))
                 }
             }
             .listStyle(.inset)
@@ -82,13 +76,24 @@ struct ContentView: View {
         .frame(maxHeight: viewModel.selectedItem?.id == item.id ? 0 : .infinity)
     }
     
-    private func tempColor(temp: Double) -> Color {
+    @ViewBuilder
+    private func tempColor(temp: Double) -> _ConditionalContent<_ConditionalContent<Color, Color>, Color> {
         if temp<10 {
-            return Color("LightBlue")
+            Color("LightBlue")
         } else if (10...25).contains(temp) {
-            return Color.orange
+            Color.orange
         } else {
-            return Color.red
+            Color.red
+        }
+    }
+    @ViewBuilder
+    private func tempColor2(temp: Double) -> _ConditionalContent<_ConditionalContent<Color, Color>, Color> {
+        if temp<10 {
+            Color.clear
+        } else if (10...25).contains(temp) {
+            Color.clear
+        } else {
+            Color.clear
         }
     }
 }

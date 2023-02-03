@@ -7,12 +7,8 @@ class WeatherViewModel: NSObject, ObservableObject {
     private let weatherService: WeatherService = WeatherService()
     
     @Published var search: String = ""
-//    @Published var selectedItem: [Dictionary<Int, WeatherApiModel>.Element] = []
-//    @Published var selectedItem: [Int: WeatherApiModel] = [:]
-
     @Published var selectedItem: WeatherApiModel?
-    @Published var weatherApi: [Dictionary<Int, WeatherApiModel>.Element] = []
-    private var weather: [Int: WeatherApiModel] = [:]
+    @Published var weather: [WeatherApiModel] = []
     @Published var toggle: Bool = false
     @Published var lastLocation: CLLocation = .init()
     
@@ -41,12 +37,10 @@ class WeatherViewModel: NSObject, ObservableObject {
             .searchCity(city: city)
             .subscribe(on: Scheduler.background)
             .receive(on: Scheduler.main)
-            .sink(receiveCompletion: { _ in }) { result in
-//                self.weatherApi.append(result)
-//                self.weatherApi.append((key: result.id, value: result))
+            .sink(receiveCompletion: { _ in }) { [self] result in
                 withAnimation {
-                    self.weather[result.id] = result
-                    self.weatherApi = self.weather.sorted(by: <)
+                    weather.append(result)
+                    weather = removeDuplicateElements(weathers: weather)
                 }
             }
             .store(in: &bag)
@@ -60,20 +54,22 @@ class WeatherViewModel: NSObject, ObservableObject {
             )
             .subscribe(on: Scheduler.background)
             .receive(on: Scheduler.main)
-            .sink(receiveCompletion: { _ in }) { result in
-//                self.weatherApi.append(result)
-//                self.weatherApi = self.removeDuplicateElements(weathers: self.weatherApi)
+            .sink(receiveCompletion: { _ in }) { [self] result in
                 withAnimation {
-                self.weather[result.id] = result
-                self.weatherApi = self.weather.sorted(by: <)
-                
-//                    self.selectedItem.removeAll()
-//                    self.selectedItem.append((key: result.id, value: result))
-                    self.selectedItem = result
+                    weather.append(result)
+                    weather = removeDuplicateElements(weathers: weather)
+                    selectedItem = result
+                    moveToTop()
                 }
             }
             .store(in: &bag)
     }
+    
+    func moveToTop() {
+        weather = weather.filter( { $0.id != selectedItem?.id } )
+        weather.insert(selectedItem!, at: 0)
+    }
+    
     private func removeDuplicateElements(weathers: [WeatherApiModel]) -> [WeatherApiModel] {
         var unique = [WeatherApiModel]()
         for weather in weathers {
