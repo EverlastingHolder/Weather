@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ContentView: View {
+struct WeatherView: View {
     @StateObject
     private var viewModel: WeatherViewModel = .init()
     var body: some View {
