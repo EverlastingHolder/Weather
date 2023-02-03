@@ -7,7 +7,7 @@ class WeatherViewModel: NSObject, ObservableObject {
     private let weatherService: WeatherService = WeatherService()
     
     @Published var search: String = ""
-    @Published var selectedItem: WeatherApiModel?
+    @Published var selectedItem: WeatherApiModel? = nil
     @Published var weather: [WeatherApiModel] = []
     @Published var toggle: Bool = false
     @Published var lastLocation: CLLocation = .init()
@@ -22,10 +22,20 @@ class WeatherViewModel: NSObject, ObservableObject {
         manager.requestWhenInUseAuthorization()
         manager.startUpdatingLocation()
         
+        self.$selectedItem
+            .subscribe(on: Scheduler.background)
+            .receive(on: Scheduler.main)
+            .sink { item in
+                withAnimation() {
+                    self.moveToTop()
+                }
+            }
+            .store(in: &bag)
+        
         self.$search
             .debounce(for: .milliseconds(500), scheduler: Scheduler.main)
-            .subscribe(on: Scheduler.main)
-            .receive(on: Scheduler.main)
+            .subscribe(on: Scheduler.background)
+            .receive(on: Scheduler.background)
             .sink { result in
                 self.fetchCity(city: result)
             }
@@ -56,18 +66,14 @@ class WeatherViewModel: NSObject, ObservableObject {
             .receive(on: Scheduler.main)
             .sink(receiveCompletion: { _ in }) { [self] result in
                 withAnimation {
-                    weather.append(result)
-                    weather = removeDuplicateElements(weathers: weather)
-                    selectedItem = result
-                    moveToTop()
+                    if selectedItem?.id != result.id {
+                        weather.append(result)
+                        weather = removeDuplicateElements(weathers: weather)
+                        selectedItem = result
+                    }
                 }
             }
             .store(in: &bag)
-    }
-    
-    func moveToTop() {
-        weather = weather.filter( { $0.id != selectedItem?.id } )
-        weather.insert(selectedItem!, at: 0)
     }
     
     private func removeDuplicateElements(weathers: [WeatherApiModel]) -> [WeatherApiModel] {
@@ -80,6 +86,13 @@ class WeatherViewModel: NSObject, ObservableObject {
             }
         }
         return unique
+    }
+    
+    func moveToTop() {
+        if let item = selectedItem {
+            weather = weather.filter( { $0.id != item.id } )
+            weather.insert(item, at: 0)
+        }
     }
     
     deinit {

@@ -4,11 +4,11 @@ import Combine
 
 final class BaseNetwork {
     private let apiKey = "e5c66cdda3795ab6f16f90ae84260181"
-    private let baseURL: URL = URL(string:"https://api.openweathermap.org/")!
+    private let baseURL: URL = URL(string:"https://api.openweathermap.org/data/2.5/")!
     private let session: URLSession = .shared
     
     func run<T: Codable>(
-        _ path: String = "data/2.5/weather",
+        _ path: String = "weather",
         method: String = "GET",
         params: [String: String?] = [:],
         decoder: JSONDecoder = .init()

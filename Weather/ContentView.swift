@@ -9,8 +9,9 @@ struct ContentView: View {
                 ForEach(viewModel.weather, id:\.id) { item in
                     Button(action: {
                         withAnimation() {
-                            viewModel.selectedItem = item
-                            viewModel.moveToTop()
+                            if viewModel.selectedItem?.id != item.id {
+                                viewModel.selectedItem = item
+                            }
                         }
                     }) {
                         VStack(alignment: .leading, spacing: 8) {
@@ -18,7 +19,13 @@ struct ContentView: View {
                             defaultRow(item: item)
                         }
                     }
-                    .listRowBackground(viewModel.selectedItem?.id == item.id ? Color.blue.animation(.default) : Color.clear.animation(.default))
+                    .listRowBackground(
+                        viewModel.selectedItem?.id == item.id
+                        ?
+                        tempColor(temp: item.main.temp ).animation(.default)
+                        :
+                        Color.clear.animation(.default)
+                    )
                 }
             }
             .listStyle(.inset)
@@ -39,7 +46,7 @@ struct ContentView: View {
     
     @ViewBuilder
     private func selectedRow(item: WeatherApiModel) -> some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 8) {
             Text(item.name ?? "")
                 .font(.title)
             HStack {
@@ -60,8 +67,8 @@ struct ContentView: View {
         HStack {
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
-                    Text((item.name ?? "") + ",")
-                    Text(item.main.celciusOrFarenheit(toggle: viewModel.toggle) + "° \(viewModel.toggle ? "C" : "F")")
+                    Text(item.name ?? "" )
+                    Text(", " + item.main.celciusOrFarenheit(toggle: viewModel.toggle) + "° \(viewModel.toggle ? "C" : "F")")
                 }
                 HStack {
                     Text(item.date)
@@ -76,24 +83,13 @@ struct ContentView: View {
         .frame(maxHeight: viewModel.selectedItem?.id == item.id ? 0 : .infinity)
     }
     
-    @ViewBuilder
-    private func tempColor(temp: Double) -> _ConditionalContent<_ConditionalContent<Color, Color>, Color> {
+    private func tempColor(temp: Double) -> Color {
         if temp<10 {
-            Color("LightBlue")
+            return Color("LightBlue")
         } else if (10...25).contains(temp) {
-            Color.orange
+            return Color.orange
         } else {
-            Color.red
-        }
-    }
-    @ViewBuilder
-    private func tempColor2(temp: Double) -> _ConditionalContent<_ConditionalContent<Color, Color>, Color> {
-        if temp<10 {
-            Color.clear
-        } else if (10...25).contains(temp) {
-            Color.clear
-        } else {
-            Color.clear
+            return Color.red
         }
     }
 }
