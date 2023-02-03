@@ -7,8 +7,10 @@ class WeatherViewModel: NSObject, ObservableObject {
     private let weatherService: WeatherService = WeatherService()
     
     @Published var search: String = ""
-    @Published var selectedItem: [Dictionary<Int, WeatherApiModel>.Element] = []
-    
+//    @Published var selectedItem: [Dictionary<Int, WeatherApiModel>.Element] = []
+//    @Published var selectedItem: [Int: WeatherApiModel] = [:]
+
+    @Published var selectedItem: WeatherApiModel?
     @Published var weatherApi: [Dictionary<Int, WeatherApiModel>.Element] = []
     private var weather: [Int: WeatherApiModel] = [:]
     @Published var toggle: Bool = false
@@ -65,8 +67,9 @@ class WeatherViewModel: NSObject, ObservableObject {
                 self.weather[result.id] = result
                 self.weatherApi = self.weather.sorted(by: <)
                 
-                    self.selectedItem.removeAll()
-                    self.selectedItem.append((key: result.id, value: result))
+//                    self.selectedItem.removeAll()
+//                    self.selectedItem.append((key: result.id, value: result))
+                    self.selectedItem = result
                 }
             }
             .store(in: &bag)
