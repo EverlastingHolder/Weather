@@ -8,13 +8,14 @@ struct ContentView: View {
             List {
                 ForEach(viewModel.weatherApi, id:\.key) { (key, value) in
                     Button(action: {
-                        withAnimation() {
+//                        withAnimation() {
                             viewModel.selectedItem.removeAll()
                             viewModel.selectedItem.append((key: key, value: value))
 //                            viewModel.weatherApi = viewModel.weatherApi.filter { $0.key != viewModel.selectedItem[0].key }
 //                            let index = viewModel.weatherApi.firstIndex(where: { $0.key == viewModel.selectedItem[0].key })
-//                            viewModel.weatherApi.insert(contentsOf: viewModel.selectedItem, at: index ?? 0)
-                        }
+//                            viewModel.weatherApi.insert(contentsOf: viewModel.selectedItem, at: 0)
+//                            viewModel.weatherApi.insert(viewModel.selectedItem.first!, at: 0)
+//                        }
                     }) {
                         VStack(alignment: .leading, spacing: 8) {
                             selectedRow(item: value)
@@ -55,8 +56,8 @@ struct ContentView: View {
                 Text("C")
             }
         }
-        .opacity(viewModel.selectedItem[0].key == item.id ? 1 : 0)
-        .frame(maxHeight: viewModel.selectedItem[0].key == item.id ? .infinity : 0)
+//        .opacity(viewModel.selectedItem[0].key == item.id ? 1 : 0)
+//        .frame(maxHeight: viewModel.selectedItem[0].key == item.id ? .infinity : 0)
     }
     
     @ViewBuilder
@@ -76,8 +77,8 @@ struct ContentView: View {
                 Image(systemName: "doc.text.magnifyingglass")
             }
         }
-        .opacity(viewModel.selectedItem[0].key == item.id ? 0 : 1)
-        .frame(maxHeight: viewModel.selectedItem[0].key == item.id ? 0 : .infinity)
+//        .opacity(viewModel.selectedItem[0].key == item.id ? 0 : 1)
+//        .frame(maxHeight: viewModel.selectedItem[0].key == item.id ? 0 : .infinity)
     }
     
     private func tempColor(temp: Double) -> Color {
