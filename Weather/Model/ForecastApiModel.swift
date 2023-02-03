@@ -10,11 +10,12 @@ struct ForecastApiModel: Codable, Hashable {
 
 struct ListWeather: Codable, Hashable {
     var dt: Int? = nil
+    var main: MainForecast? = MainForecast()
     var weather: [Weather]? = []
     var clouds: Clouds? = Clouds()
     var wind: Wind? = Wind()
     var visibility: Int? = nil
-    var pop: Int? = nil
+    var pop: Double? = nil
     var sys: SysForecast? = SysForecast()
     var dt_txt: String? = nil
 }
@@ -37,7 +38,7 @@ struct SysForecast: Codable, Hashable {
 }
 
 struct City: Codable, Hashable {
-    var id: String? = nil
+    var id: Int? = nil
     var name: String? = nil
     var coord: Coord? = Coord()
     var country: String? = nil

@@ -3,6 +3,8 @@ import SwiftUI
 struct WeatherView: View {
     @StateObject
     private var viewModel: WeatherViewModel = .init()
+    @State
+    var isPresented: Bool = false
     var body: some View {
         NavigationStack {
             List {
@@ -75,8 +77,14 @@ struct WeatherView: View {
                 }
             }
             Spacer()
-            Button(action: {}) {
+            
+            Button(action: {
+                self.isPresented = true
+            }) {
                 Image(systemName: "doc.text.magnifyingglass")
+            }
+            .navigationDestination(isPresented: $isPresented) {
+                ForecastView(lat: item.coord?.lat ?? 0, lon: item.coord?.lon ?? 0)
             }
         }
         .opacity(viewModel.selectedItem?.id == item.id ? 0 : 1)

@@ -21,6 +21,8 @@
 		097B9FA3298A436E0084ADC9 /* WeatherViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 097B9FA2298A436E0084ADC9 /* WeatherViewModel.swift */; };
 		09928B07298D1BD8007783BC /* ForecastApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09928B06298D1BD8007783BC /* ForecastApiModel.swift */; };
 		09928B09298D1F78007783BC /* ForecastService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09928B08298D1F78007783BC /* ForecastService.swift */; };
+		09928B0E298D21A9007783BC /* ForecastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09928B0D298D21A9007783BC /* ForecastView.swift */; };
+		09928B10298D21EF007783BC /* ForecastViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09928B0F298D21EF007783BC /* ForecastViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +41,8 @@
 		097B9FA2298A436E0084ADC9 /* WeatherViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherViewModel.swift; sourceTree = "<group>"; };
 		09928B06298D1BD8007783BC /* ForecastApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForecastApiModel.swift; sourceTree = "<group>"; };
 		09928B08298D1F78007783BC /* ForecastService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForecastService.swift; sourceTree = "<group>"; };
+		09928B0D298D21A9007783BC /* ForecastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForecastView.swift; sourceTree = "<group>"; };
+		09928B0F298D21EF007783BC /* ForecastViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForecastViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,6 +137,7 @@
 			isa = PBXGroup;
 			children = (
 				097B9F94298A42150084ADC9 /* WeatherView.swift */,
+				09928B0D298D21A9007783BC /* ForecastView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -141,6 +146,7 @@
 			isa = PBXGroup;
 			children = (
 				097B9FA2298A436E0084ADC9 /* WeatherViewModel.swift */,
+				09928B0F298D21EF007783BC /* ForecastViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -226,9 +232,11 @@
 				097B9F95298A42150084ADC9 /* WeatherView.swift in Sources */,
 				092406D7298B96FC00BB6FF8 /* WeatherService.swift in Sources */,
 				092406D5298B96D000BB6FF8 /* Scheduler.swift in Sources */,
+				09928B10298D21EF007783BC /* ForecastViewModel.swift in Sources */,
 				092406D2298B96A000BB6FF8 /* URLRequest.swift in Sources */,
 				09928B09298D1F78007783BC /* ForecastService.swift in Sources */,
 				092406DA298B988B00BB6FF8 /* WeatherApiModel.swift in Sources */,
+				09928B0E298D21A9007783BC /* ForecastView.swift in Sources */,
 				097B9FA3298A436E0084ADC9 /* WeatherViewModel.swift in Sources */,
 				092406DD298BC97100BB6FF8 /* Array.swift in Sources */,
 				09928B07298D1BD8007783BC /* ForecastApiModel.swift in Sources */,

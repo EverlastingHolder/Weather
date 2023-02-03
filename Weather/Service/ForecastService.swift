@@ -6,13 +6,13 @@ protocol ForecastServiceType {
     func getWeatherDay(
         lat: Double,
         lon: Double
-    ) -> AnyPublisher<WeatherApiModel, Error>
+    ) -> AnyPublisher<ForecastApiModel, Error>
 }
 
 final class ForecastService: ForecastServiceType {
     private let baseNetwork: BaseNetwork = BaseNetwork()
     
-    func getWeatherDay(lat: Double, lon: Double) -> AnyPublisher<WeatherApiModel, Error> {
+    func getWeatherDay(lat: Double, lon: Double) -> AnyPublisher<ForecastApiModel, Error> {
         self.baseNetwork.run(
             "forecast",
             params: [

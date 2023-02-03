@@ -22,6 +22,7 @@ final class BaseNetwork {
             ].merging(params) { (current, _) in }
         )
 
+        print("request \(request.url)")
         return self.request(request)
     }
     
