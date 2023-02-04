@@ -4,8 +4,8 @@ struct ForecastApiModel: Codable, Hashable {
     var cod: String? = nil
     var message: Int? = nil
     var cnt: Int? = nil
-    var list: [ListWeather]? = []
-    var city: City? = City()
+    var list: [ListWeather] = []
+    var city: City = City()
 }
 
 struct ListWeather: Codable, Hashable {
@@ -21,7 +21,7 @@ struct ListWeather: Codable, Hashable {
     
     var date: String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "dd.MM.yy"
+        formatter.dateFormat = "MM.dd, HH:mm"
         return formatter.string(from: Date(timeIntervalSince1970: TimeInterval(dt ?? 0)))
     }
 }
@@ -57,7 +57,7 @@ struct SysForecast: Codable, Hashable {
 
 struct City: Codable, Hashable {
     var id: Int? = nil
-    var name: String? = nil
+    var name: String = ""
     var coord: Coord? = Coord()
     var country: String? = nil
     var population: Int? = nil

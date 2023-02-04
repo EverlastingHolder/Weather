@@ -33,7 +33,7 @@ struct WeatherView: View {
                 }
             }
             .navigationDestination(isPresented: $isPresented) {
-                ForecastView(lat: fd.coord?.lat ?? 0, lon: fd.coord?.lon ?? 0)
+                ForecastView(viewModel: .init(lat: fd.coord?.lat ?? 0, lon: fd.coord?.lon ?? 0, toggle: viewModel.toggle))
             }
             .listStyle(.inset)
             .searchable(text: $viewModel.search)

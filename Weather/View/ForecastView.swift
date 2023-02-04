@@ -4,26 +4,22 @@ import Charts
 
 struct ForecastView: View {
     @ObservedObject
-    var viewModel: ForecastViewModel = .init()
-    
-    @State
-    var lat: Double
-    @State
-    var lon: Double
+    var viewModel: ForecastViewModel
     
     var body: some View {
         VStack {
             Chart {
-                ForEach(viewModel.forecast.list!, id: \.self) { item in
+                ForEach(viewModel.forecast.list, id: \.self) { item in
                     LineMark(
-                        x: .value("Day", item.date),
-                        y: .value("Temp", item.main.temp)
+                        x: .value("Temp", Double(item.main.celciusOrFarenheit(toggle: viewModel.toggle))!),
+                        y: .value("Times", item.date)
                     )
                 }
             }
             .onAppear {
-                viewModel.getWeatherDay(lat: lat, lon: lon)
+                viewModel.getWeatherDay()
             }
         }
+        .navigationTitle(Text(viewModel.forecast.city.name))
     }
 }
