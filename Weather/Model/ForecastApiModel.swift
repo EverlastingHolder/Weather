@@ -6,6 +6,9 @@ struct ForecastApiModel: Codable, Hashable {
     var cnt: Int? = nil
     var list: [ListWeather] = []
     var city: City = City()
+    var groupDic: [(key: String, value: [Array<ListWeather>.Element])] {
+        Dictionary(grouping: list) { $0.date }.sorted(by: { $0.key < $1.key })
+    }
 }
 
 struct ListWeather: Codable, Hashable {
@@ -19,9 +22,21 @@ struct ListWeather: Codable, Hashable {
     var sys: SysForecast? = SysForecast()
     var dt_txt: String = ""
     
-    var date: String {
+    var dateAndTime: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "MM.dd, HH:mm"
+        return formatter.string(from: Date(timeIntervalSince1970: TimeInterval(dt ?? 0)))
+    }
+    
+    var time: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        return formatter.string(from: Date(timeIntervalSince1970: TimeInterval(dt ?? 0)))
+    }
+    
+    var date: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MM.dd"
         return formatter.string(from: Date(timeIntervalSince1970: TimeInterval(dt ?? 0)))
     }
 }
