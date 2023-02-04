@@ -26,7 +26,7 @@ struct WeatherView: View {
                         ?
                         Color("").tempColor(temp: item.main.temp ).animation(.default)
                         :
-                            Color.clear.animation(.default)
+                        Color.clear.animation(.default)
                     )
                 }
             }

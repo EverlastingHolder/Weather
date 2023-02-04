@@ -92,6 +92,7 @@
 		092406DB298BBD8700BB6FF8 /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				09DC49F1298E823000B58F3B /* LocationManager.swift */,
 				092406D6298B96FC00BB6FF8 /* WeatherService.swift */,
 				09928B08298D1F78007783BC /* ForecastService.swift */,
 			);
@@ -117,7 +118,6 @@
 		097B9F91298A42150084ADC9 /* Weather */ = {
 			isa = PBXGroup;
 			children = (
-				09DC49F0298E822500B58F3B /* Manager */,
 				09928B0C298D2115007783BC /* App */,
 				09928B0B298D210D007783BC /* ViewModel */,
 				09928B0A298D2103007783BC /* View */,
@@ -163,14 +163,6 @@
 				097B9F92298A42150084ADC9 /* WeatherApp.swift */,
 			);
 			path = App;
-			sourceTree = "<group>";
-		};
-		09DC49F0298E822500B58F3B /* Manager */ = {
-			isa = PBXGroup;
-			children = (
-				09DC49F1298E823000B58F3B /* LocationManager.swift */,
-			);
-			path = Manager;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
