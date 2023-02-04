@@ -1,23 +1,29 @@
 import Foundation
 import SwiftUI
+import Charts
 
 struct ForecastView: View {
-    @StateObject
-    private var viewModel: ForecastViewModel
+    @ObservedObject
+    var viewModel: ForecastViewModel = .init()
     
-    let lat: Double
-    let lon: Double
-    
-    init(
-        lat: Double,
-        lon: Double
-    ) {
-        self.lat = lat
-        self.lon = lon
-        _viewModel = .init(wrappedValue: ForecastViewModel(lat: lat, lon: lon))
-    }
+    @State
+    var lat: Double
+    @State
+    var lon: Double
     
     var body: some View {
-        Text("fd")
+        VStack {
+            Chart {
+                ForEach(viewModel.forecast.list!, id: \.self) { item in
+                    LineMark(
+                        x: .value("Day", item.date),
+                        y: .value("Temp", item.main.temp)
+                    )
+                }
+            }
+            .onAppear {
+                viewModel.getWeatherDay(lat: lat, lon: lon)
+            }
+        }
     }
 }

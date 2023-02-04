@@ -1,29 +1,20 @@
 import Foundation
 import Combine
 
-final class ForecastViewModel: ObservableObject {
+class ForecastViewModel: ObservableObject {
     private let service: ForecastService = ForecastService()
+    
+    @Published var forecast: ForecastApiModel = .init()
     
     private var bag: Set<AnyCancellable> = .init()
     
-    let lat: Double
-    let lon: Double
-    
-    init(
-        lat: Double,
-        lon: Double
-    ) {
-        self.lat = lat
-        self.lon = lon
-        
+    func getWeatherDay(lat: Double, lon: Double) {
         self.service
             .getWeatherDay(lat: lat, lon: lon)
-            .subscribe(on: Scheduler.background)
+            .subscribe(on: Scheduler.main)
             .receive(on: Scheduler.main)
-            .sink(receiveCompletion: { c in
-                print("result \(c)")
-            }) { result in
-                print("result: \(result)")
+            .sink(receiveCompletion: { _ in }) { result in
+                self.forecast = result
             }
             .store(in: &bag)
     }

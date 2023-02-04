@@ -4,6 +4,8 @@ struct WeatherView: View {
     @StateObject
     private var viewModel: WeatherViewModel = .init()
     @State
+    private var fd: WeatherApiModel = WeatherApiModel(id: 0)
+    @State
     var isPresented: Bool = false
     var body: some View {
         NavigationStack {
@@ -29,6 +31,9 @@ struct WeatherView: View {
                         Color.clear.animation(.default)
                     )
                 }
+            }
+            .navigationDestination(isPresented: $isPresented) {
+                ForecastView(lat: fd.coord?.lat ?? 0, lon: fd.coord?.lon ?? 0)
             }
             .listStyle(.inset)
             .searchable(text: $viewModel.search)
@@ -79,12 +84,12 @@ struct WeatherView: View {
             Spacer()
             
             Button(action: {
-                self.isPresented = true
+                self.fd = item
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    self.isPresented = true
+                }
             }) {
                 Image(systemName: "doc.text.magnifyingglass")
-            }
-            .navigationDestination(isPresented: $isPresented) {
-                ForecastView(lat: item.coord?.lat ?? 0, lon: item.coord?.lon ?? 0)
             }
         }
         .opacity(viewModel.selectedItem?.id == item.id ? 0 : 1)
