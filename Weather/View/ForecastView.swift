@@ -7,27 +7,6 @@ struct ForecastView: View {
     var viewModel: ForecastViewModel
     
     var body: some View {
-//        VStack {
-//            Chart {
-//                ForEach(viewModel.forecast.list.prefix(12), id: \.self) { item in
-//                    PointMark(
-//                        x: .value("Temp", Double(item.main.celciusOrFarenheit(toggle: viewModel.toggle))!),
-//                        y: .value("Times", item.date)
-//                    )
-//                    .foregroundStyle(tempColor(temp: item.main.temp))
-//                    .annotation(position: .trailing) {
-//                        Text("\(item.main.celciusOrFarenheit(toggle: viewModel.toggle))" + "° \(viewModel.toggle ? "C" : "F")")
-//                            .font(.caption)
-//                    }
-//                }
-//
-//            }
-//            .chartXAxisLabel("Temperature", position: .bottom)
-//            .chartYAxisLabel("Date", position: .leading)
-//            .onAppear {
-//                viewModel.getWeatherDay()
-//            }
-//        }
         List {
             ForEach(viewModel.forecast.groupDic, id: \.key) { (key, value) in
                 Chart {
