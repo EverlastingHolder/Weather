@@ -4,7 +4,7 @@ import Combine
 class ForecastViewModel: ObservableObject {
     private let service: ForecastService = ForecastService()
     
-    @Published var forecast: ForecastApiModel = .init()
+    @Published var forecast: ForecastApiModel = ForecastApiModel()
     
     let lat: Double
     let lon: Double

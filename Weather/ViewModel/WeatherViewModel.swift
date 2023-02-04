@@ -1,27 +1,19 @@
 import Foundation
 import Combine
 import SwiftUI
-import CoreLocation
 
-class WeatherViewModel: NSObject, ObservableObject {
-    private let weatherService: WeatherService = WeatherService()
-    
+class WeatherViewModel: ObservableObject {
+    @Published var modelForNavigation: WeatherApiModel = WeatherApiModel()
     @Published var search: String = ""
     @Published var selectedItem: WeatherApiModel? = nil
     @Published var weather: [WeatherApiModel] = []
     @Published var toggle: Bool = false
-    @Published var lastLocation: CLLocation = .init()
-    
-    private let manager: CLLocationManager = CLLocationManager()
+
+    private let weatherService: WeatherService = WeatherService()
+    private let locationManager: LocationManager = LocationManager()
     private var bag: Set<AnyCancellable> = .init()
     
-    override init() {
-        super.init()
-        manager.delegate = self
-        manager.desiredAccuracy = kCLLocationAccuracyBest
-        manager.requestWhenInUseAuthorization()
-        manager.startUpdatingLocation()
-        
+     init() {
         self.$selectedItem
             .subscribe(on: Scheduler.background)
             .receive(on: Scheduler.main)
@@ -59,8 +51,8 @@ class WeatherViewModel: NSObject, ObservableObject {
     func requestCurrentLocation() {
         self.weatherService
             .getCurrentCity(
-                lat: lastLocation.coordinate.latitude,
-                lon: lastLocation.coordinate.longitude
+                lat: locationManager.lastLocation.coordinate.latitude,
+                lon: locationManager.lastLocation.coordinate.longitude
             )
             .subscribe(on: Scheduler.background)
             .receive(on: Scheduler.main)
@@ -101,9 +93,4 @@ class WeatherViewModel: NSObject, ObservableObject {
     }
 }
 
-extension WeatherViewModel: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let location = locations.last else { return }
-        lastLocation = location
-    }
-}
+

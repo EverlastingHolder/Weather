@@ -21,8 +21,7 @@ final class BaseNetwork {
              "units": "metric"
             ].merging(params) { (current, _) in }
         )
-
-//        print("request \(request.url)")
+        
         return self.request(request)
     }
     

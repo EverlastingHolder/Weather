@@ -4,9 +4,7 @@ struct WeatherView: View {
     @StateObject
     private var viewModel: WeatherViewModel = .init()
     @State
-    private var fd: WeatherApiModel = WeatherApiModel(id: 0)
-    @State
-    var isPresented: Bool = false
+    private var isPresented: Bool = false
     var body: some View {
         NavigationStack {
             List {
@@ -26,14 +24,20 @@ struct WeatherView: View {
                     .listRowBackground(
                         viewModel.selectedItem?.id == item.id
                         ?
-                        tempColor(temp: item.main.temp ).animation(.default)
+                        Color("").tempColor(temp: item.main.temp ).animation(.default)
                         :
-                        Color.clear.animation(.default)
+                            Color.clear.animation(.default)
                     )
                 }
             }
             .navigationDestination(isPresented: $isPresented) {
-                ForecastView(viewModel: .init(lat: fd.coord?.lat ?? 0, lon: fd.coord?.lon ?? 0, toggle: viewModel.toggle))
+                ForecastView(
+                    viewModel: .init(
+                        lat: viewModel.modelForNavigation.coord.lat ?? 0,
+                        lon: viewModel.modelForNavigation.coord.lon ?? 0,
+                        toggle: viewModel.toggle
+                    )
+                )
             }
             .listStyle(.inset)
             .searchable(text: $viewModel.search)
@@ -54,15 +58,16 @@ struct WeatherView: View {
     @ViewBuilder
     private func selectedRow(item: WeatherApiModel) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(item.name ?? "")
+            Text(item.name)
                 .font(.title)
             HStack {
-                Text(item.main.celciusOrFarenheit(toggle: viewModel.toggle) + "°")
+                Text("\(item.main.celciusOrFarenheit(toggle: viewModel.toggle))°")
                 Toggle(isOn: $viewModel.toggle){
                     Text("F")
                         .frame(maxWidth: .infinity, alignment: .trailing)
                 }
                 Text("C")
+                listWeatherButton(item: item)
             }
         }
         .opacity(viewModel.selectedItem?.id == item.id ? 1 : 0)
@@ -74,8 +79,8 @@ struct WeatherView: View {
         HStack {
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
-                    Text(item.name ?? "" )
-                    Text(", " + item.main.celciusOrFarenheit(toggle: viewModel.toggle) + "° \(viewModel.toggle ? "C" : "F")")
+                    Text("\(item.name),")
+                    Text("\(item.main.celciusOrFarenheit(toggle: viewModel.toggle))° \(viewModel.toggle ? "C" : "F")")
                 }
                 HStack {
                     Text(item.date)
@@ -83,26 +88,21 @@ struct WeatherView: View {
             }
             Spacer()
             
-            Button(action: {
-                self.fd = item
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    self.isPresented = true
-                }
-            }) {
-                Image(systemName: "doc.text.magnifyingglass")
-            }
+            listWeatherButton(item: item)
         }
         .opacity(viewModel.selectedItem?.id == item.id ? 0 : 1)
         .frame(maxHeight: viewModel.selectedItem?.id == item.id ? 0 : .infinity)
     }
     
-    private func tempColor(temp: Double) -> Color {
-        if temp<10 {
-            return Color("LightBlue")
-        } else if (10...25).contains(temp) {
-            return Color.orange
-        } else {
-            return Color.red
+    @ViewBuilder
+    private func listWeatherButton(item: WeatherApiModel) -> some View {
+        Button(action: {
+            self.viewModel.modelForNavigation = item
+        }) {
+            Image(systemName: "doc.text.magnifyingglass")
+        }
+        .onChange(of: viewModel.modelForNavigation) { _ in
+            isPresented = true
         }
     }
 }

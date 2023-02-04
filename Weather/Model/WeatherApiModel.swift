@@ -5,30 +5,28 @@ struct WeatherApiModel: Codable, Hashable, Comparable {
         lhs.id < rhs.id
     }
     
-    var coord: Coord? = Coord()
+    var coord: Coord = Coord()
     var weather: [Weather]? = []
     var base: String? = nil
     var main: Main = Main()
     var visibility : Int? = nil
     var wind: Wind? = Wind()
     var clouds: Clouds? = Clouds()
-    var dt: Int? = nil
+    var dt: Int = 0
     var sys: Sys? = Sys()
     var timezone: Int? = nil
-    var id: Int
-    var name: String? = nil
+    var id: Int = 0
+    var name: String = ""
     var cod: Int? = nil
     
     var date: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd.MM.yyyy hh:mm:ss"
-        return formatter.string(from: Date(timeIntervalSince1970: TimeInterval(dt ?? 0)))
+        Date(timeIntervalSince1970: TimeInterval(dt)).getFormattedDate(format: "dd.MM.yyyy hh:mm:ss")
     }
 }
 
 struct Coord: Codable, Hashable {
-    var lon: Double? = nil
-    var lat: Double? = nil
+    var lon: Double? = 0
+    var lat: Double? = 0
 }
 
 struct Sys: Codable, Hashable {

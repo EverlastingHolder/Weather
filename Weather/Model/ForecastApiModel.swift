@@ -5,14 +5,14 @@ struct ForecastApiModel: Codable, Hashable {
     var message: Int? = nil
     var cnt: Int? = nil
     var list: [ListWeather] = []
-    var city: City = City()
-    var groupDic: [(key: String, value: [Array<ListWeather>.Element])] {
+    var city: City? = City()
+    var weatherByDay: [(key: String, value: [Array<ListWeather>.Element])] {
         Dictionary(grouping: list) { $0.date }.sorted(by: { $0.key < $1.key })
     }
 }
 
 struct ListWeather: Codable, Hashable {
-    var dt: Int? = nil
+    var dt: Int = 0
     var main: MainForecast = MainForecast()
     var weather: [Weather]? = []
     var clouds: Clouds? = Clouds()
@@ -22,22 +22,12 @@ struct ListWeather: Codable, Hashable {
     var sys: SysForecast? = SysForecast()
     var dt_txt: String = ""
     
-    var dateAndTime: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MM.dd, HH:mm"
-        return formatter.string(from: Date(timeIntervalSince1970: TimeInterval(dt ?? 0)))
-    }
-    
     var time: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"
-        return formatter.string(from: Date(timeIntervalSince1970: TimeInterval(dt ?? 0)))
+        Date(timeIntervalSince1970: TimeInterval(dt)).getFormattedDate(format: "HH:mm")
     }
     
     var date: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MM.dd"
-        return formatter.string(from: Date(timeIntervalSince1970: TimeInterval(dt ?? 0)))
+        Date(timeIntervalSince1970: TimeInterval(dt)).getFormattedDate(format: "MM:dd")
     }
 }
 

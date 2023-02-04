@@ -1,6 +1,5 @@
 import Foundation
 import Combine
-import SwiftUI
 
 protocol ForecastServiceType {
     func getWeatherDay(

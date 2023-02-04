@@ -1,6 +1,5 @@
 import Foundation
 import Combine
-import SwiftUI
 
 protocol WeatherServiceType {
     func getCurrentCity(
@@ -14,10 +13,10 @@ protocol WeatherServiceType {
 }
 
 final class WeatherService: WeatherServiceType {
-    private let network: BaseNetwork = BaseNetwork()
+    private let baseNetwork: BaseNetwork = BaseNetwork()
     
     func getCurrentCity(lat: Double, lon: Double) -> AnyPublisher<WeatherApiModel, Error> {
-        self.network.run(
+        self.baseNetwork.run(
             params: [
                 "lat": lat.description,
                 "lon": lon.description
@@ -26,7 +25,7 @@ final class WeatherService: WeatherServiceType {
     }
     
     func searchCity(city: String) -> AnyPublisher<WeatherApiModel, Error> {
-        self.network.run(
+        self.baseNetwork.run(
             params: [
                 "q": city
             ]
