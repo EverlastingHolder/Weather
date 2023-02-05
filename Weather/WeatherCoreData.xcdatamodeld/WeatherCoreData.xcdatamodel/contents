@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="22C65" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="CoordWeather" representedClassName="CoordWeather" syncable="YES" codeGenerationType="class">
+        <attribute name="lat" optional="YES" attributeType="Double" usesScalarValueType="YES"/>
+        <attribute name="lon" optional="YES" attributeType="Double" usesScalarValueType="YES"/>
+        <relationship name="weather" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WeatherModel" inverseName="coordWeather" inverseEntity="WeatherModel"/>
+    </entity>
+    <entity name="MainWeather" representedClassName="MainWeather" parentEntity="WeatherModel" syncable="YES" codeGenerationType="class">
+        <attribute name="feelsLike" optional="YES" attributeType="Double" usesScalarValueType="YES"/>
+        <attribute name="grndLevel" optional="YES" attributeType="Integer 32" usesScalarValueType="YES"/>
+        <attribute name="humidity" optional="YES" attributeType="Integer 32" usesScalarValueType="YES"/>
+        <attribute name="pressure" optional="YES" attributeType="Integer 32" usesScalarValueType="YES"/>
+        <attribute name="seaLevel" optional="YES" attributeType="Integer 32" usesScalarValueType="YES"/>
+        <attribute name="temp" optional="YES" attributeType="Double" usesScalarValueType="YES"/>
+        <attribute name="tempMax" optional="YES" attributeType="Double" usesScalarValueType="YES"/>
+        <attribute name="tempMin" optional="YES" attributeType="Double" usesScalarValueType="YES"/>
+        <relationship name="weather" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WeatherModel" inverseName="mainWeather" inverseEntity="WeatherModel"/>
+    </entity>
+    <entity name="WeatherModel" representedClassName="WeatherModel" isAbstract="YES" syncable="YES" codeGenerationType="class">
+        <attribute name="base" optional="YES" attributeType="String"/>
+        <attribute name="cod" optional="YES" attributeType="Integer 32" usesScalarValueType="YES"/>
+        <attribute name="dt" optional="YES" attributeType="Integer 32" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="-1" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="timezone" optional="YES" attributeType="Integer 32" usesScalarValueType="YES"/>
+        <attribute name="visibility" optional="YES" attributeType="Integer 32" usesScalarValueType="YES"/>
+        <relationship name="coordWeather" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoordWeather" inverseName="weather" inverseEntity="CoordWeather"/>
+        <relationship name="mainWeather" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MainWeather" inverseName="weather" inverseEntity="MainWeather"/>
+    </entity>
+</model>

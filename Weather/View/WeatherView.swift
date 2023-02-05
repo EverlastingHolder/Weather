@@ -24,7 +24,7 @@ struct WeatherView: View {
                     .listRowBackground(
                         viewModel.selectedItem?.id == item.id
                         ?
-                        Color("").tempColor(temp: item.main.temp ).animation(.default)
+                        Color("").tempColor(temp: item.main?.temp ?? 0 ).animation(.default)
                         :
                         Color.clear.animation(.default)
                     )
@@ -33,8 +33,8 @@ struct WeatherView: View {
             .navigationDestination(isPresented: $isPresented) {
                 ForecastView(
                     viewModel: .init(
-                        lat: viewModel.modelForNavigation.coord.lat ?? 0,
-                        lon: viewModel.modelForNavigation.coord.lon ?? 0,
+                        lat: viewModel.modelForNavigation.coord?.lat ?? 0,
+                        lon: viewModel.modelForNavigation.coord?.lon ?? 0,
                         toggle: viewModel.toggle
                     )
                 )
@@ -58,10 +58,10 @@ struct WeatherView: View {
     @ViewBuilder
     private func selectedRow(item: WeatherApiModel) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(item.name)
+            Text(item.name ?? "")
                 .font(.title)
             HStack {
-                Text("\(item.main.celciusOrFarenheit(toggle: viewModel.toggle))°")
+                Text("\(item.main?.celciusOrFarenheit(toggle: viewModel.toggle) ?? "") °")
                 Toggle(isOn: $viewModel.toggle){
                     Text("F")
                         .frame(maxWidth: .infinity, alignment: .trailing)
@@ -79,8 +79,8 @@ struct WeatherView: View {
         HStack {
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
-                    Text("\(item.name),")
-                    Text("\(item.main.celciusOrFarenheit(toggle: viewModel.toggle))° \(viewModel.toggle ? "C" : "F")")
+                    Text("\(item.name ?? ""),")
+                    Text("\(item.main?.celciusOrFarenheit(toggle: viewModel.toggle) ?? "")° \(viewModel.toggle ? "C" : "F")")
                 }
                 HStack {
                     Text(item.date)
