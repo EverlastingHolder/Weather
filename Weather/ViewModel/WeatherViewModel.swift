@@ -8,6 +8,7 @@ class WeatherViewModel: ObservableObject {
     @Published var selectedItem: WeatherApiModel? = nil
     @Published var weather: [WeatherApiModel] = []
     @Published var toggle: Bool = false
+    @AppStorage("selectedId") var selectedId: Int = -1
     
     private let weatherService: WeatherService = WeatherService()
     private let container = WeatherDataContoller.shared.container
@@ -23,9 +24,9 @@ class WeatherViewModel: ObservableObject {
         self.$selectedItem
             .subscribe(on: Scheduler.background)
             .receive(on: Scheduler.main)
-            .sink { _ in
+            .sink { [weak self] _ in
                 withAnimation() {
-                    self.moveToTop()
+                    self?.moveToTop()
                 }
             }
             .store(in: &bag)
@@ -40,13 +41,58 @@ class WeatherViewModel: ObservableObject {
             .store(in: &bag)
     }
     
+    func moveToTop() {
+        if let item = selectedItem {
+            if let index = weather.firstIndex(where: {$0.id == item.id}) {
+                weather.move(from: index, to: 0)
+            }
+        }
+    }
+    
+    
+    
+    func requestCurrentLocation() {
+        self.weatherService
+            .getCurrentCity(
+                lat: locationManager.lastLocation.coordinate.latitude,
+                lon: locationManager.lastLocation.coordinate.longitude
+            )
+            .subscribe(on: Scheduler.background)
+            .receive(on: Scheduler.main)
+            .sink(receiveCompletion: { _ in }) { [weak self] result in
+                withAnimation {
+                    if self?.selectedItem?.id != result.id {
+                        self?.weather.append(result)
+                        self?.weather = self?.removeDuplicateElements(weathers: self?.weather ?? []) ?? []
+                        self?.selectedItem = result
+                        self?.selectedId = result.id ?? -1
+                        self?.saveData()
+                    }
+                }
+            }
+            .store(in: &bag)
+    }
+    
+    private func fetchCity(city: String) {
+        self.weatherService
+            .searchCity(city: city)
+            .subscribe(on: Scheduler.background)
+            .receive(on: Scheduler.main)
+            .sink(receiveCompletion: { _ in }) { [weak self] result in
+                withAnimation {
+                    self?.weather.append(result)
+                    self?.weather = self?.removeDuplicateElements(weathers: self?.weather ?? []) ?? []
+                    self?.saveData()
+                }
+            }
+            .store(in: &bag)
+    }
+    
     private func loadCachedData() {
-        print("Loading data")
         CDPublisher(request: WeatherModel.fetchRequest(), context: container.viewContext)
             .map { item in
                 item.map { item2 in
-                    print(item2.id)
-                    return WeatherApiModel(
+                    WeatherApiModel(
                         coord: .init(
                             lon: item2.coordWeather?.lon,
                             lat: item2.coordWeather?.lat),
@@ -73,21 +119,18 @@ class WeatherViewModel: ObservableObject {
             }
             .receive(on: Scheduler.main)
             .sink(receiveCompletion: { _ in }) { [weak self] item in
-                print("Loaded data from cached successfully")
                 self?.weather = item
                 self?.weather = self?.removeDuplicateElements(weathers: self?.weather ?? []) ?? []
                 let index = self?.weather.firstIndex(where: { $0.id == -1 })
                 if index != nil {
                     self?.weather.remove(at: index!)
                 }
-                
+                self?.selectedItem = self?.weather.first(where: { $0.id == self?.selectedId })
             }
             .store(in: &bag)
     }
     
     private func saveDataToCache(weather: [WeatherApiModel]) {
-        print("Saving")
-        
         do {
             weather.forEach { item in
                 let weather = WeatherModel(context: self.container.viewContext)
@@ -114,47 +157,10 @@ class WeatherViewModel: ObservableObject {
             
             if container.viewContext.hasChanges {
                 try container.viewContext.save()
-                
-                print("Save data to cached")
             }
         } catch let error {
             print("Error occur:" + String(describing: error))
         }
-    }
-    
-    private func fetchCity(city: String) {
-        self.weatherService
-            .searchCity(city: city)
-            .subscribe(on: Scheduler.background)
-            .receive(on: Scheduler.main)
-            .sink(receiveCompletion: { _ in }) { [self] result in
-                withAnimation {
-                    self.weather.append(result)
-                    self.weather = self.removeDuplicateElements(weathers: self.weather)
-                    self.saveDataToCache(weather: self.weather)
-                }
-            }
-            .store(in: &bag)
-    }
-    
-    func requestCurrentLocation() {
-        self.weatherService
-            .getCurrentCity(
-                lat: locationManager.lastLocation.coordinate.latitude,
-                lon: locationManager.lastLocation.coordinate.longitude
-            )
-            .subscribe(on: Scheduler.background)
-            .receive(on: Scheduler.main)
-            .sink(receiveCompletion: { _ in }) { [weak self] result in
-                withAnimation {
-                    if self?.selectedItem?.id != result.id {
-                        self?.weather.append(result)
-                        self?.weather = self?.removeDuplicateElements(weathers: self?.weather ?? []) ?? []
-                        self?.selectedItem = result
-                    }
-                }
-            }
-            .store(in: &bag)
     }
     
     private func removeDuplicateElements(weathers: [WeatherApiModel]) -> [WeatherApiModel] {
@@ -169,11 +175,9 @@ class WeatherViewModel: ObservableObject {
         return unique
     }
     
-    func moveToTop() {
-        if let item = selectedItem {
-            weather = weather.filter( { $0.id != item.id } )
-            weather.insert(item, at: 0)
-        }
+    func saveData() {
+        self.saveDataToCache(weather: self.weather)
+        print("save")
     }
     
     deinit {
@@ -181,5 +185,3 @@ class WeatherViewModel: ObservableObject {
         bag.removeAll()
     }
 }
-
-

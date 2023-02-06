@@ -20,7 +20,7 @@ struct WeatherApiModel: Codable, Hashable, Comparable {
     var cod: Int? = nil
     
     var date: String {
-        Date(timeIntervalSince1970: TimeInterval(dt)).getFormattedDate(format: "dd.MM.yyyy hh:mm:ss")
+        DateFormatter.DATE_WITH_TIME.string(from: Date(timeIntervalSince1970: TimeInterval(dt)))
     }
 }
 

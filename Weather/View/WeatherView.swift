@@ -2,7 +2,7 @@ import SwiftUI
 
 struct WeatherView: View {
     @StateObject
-    private var viewModel: WeatherViewModel = .init()
+    private var viewModel: WeatherViewModel = WeatherViewModel()
     @State
     private var isPresented: Bool = false
     var body: some View {
@@ -13,6 +13,7 @@ struct WeatherView: View {
                         withAnimation() {
                             if viewModel.selectedItem?.id != item.id {
                                 viewModel.selectedItem = item
+                                viewModel.selectedId = item.id ?? -1
                             }
                         }
                     }) {
@@ -26,7 +27,7 @@ struct WeatherView: View {
                         ?
                         Color("").tempColor(temp: item.main?.temp ?? 0 ).animation(.default)
                         :
-                        Color.clear.animation(.default)
+                            Color.clear.animation(.default)
                     )
                 }
             }
@@ -98,11 +99,9 @@ struct WeatherView: View {
     private func listWeatherButton(item: WeatherApiModel) -> some View {
         Button(action: {
             self.viewModel.modelForNavigation = item
+            self.isPresented = true
         }) {
             Image(systemName: "doc.text.magnifyingglass")
-        }
-        .onChange(of: viewModel.modelForNavigation) { _ in
-            isPresented = true
         }
     }
 }

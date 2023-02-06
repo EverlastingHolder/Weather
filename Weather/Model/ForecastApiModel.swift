@@ -23,11 +23,11 @@ struct ListWeather: Codable, Hashable {
     var dt_txt: String = ""
     
     var time: String {
-        Date(timeIntervalSince1970: TimeInterval(dt)).getFormattedDate(format: "HH:mm")
+        DateFormatter.TIME.string(from: Date(timeIntervalSince1970: TimeInterval(dt)))
     }
     
     var date: String {
-        Date(timeIntervalSince1970: TimeInterval(dt)).getFormattedDate(format: "MM:dd")
+        DateFormatter.DAY_MONTH.string(from: Date(timeIntervalSince1970: TimeInterval(dt)))
     }
 }
 

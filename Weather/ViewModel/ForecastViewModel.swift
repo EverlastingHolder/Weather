@@ -23,8 +23,8 @@ class ForecastViewModel: ObservableObject {
             .getWeatherDay(lat: lat, lon: lon)
             .subscribe(on: Scheduler.main)
             .receive(on: Scheduler.main)
-            .sink(receiveCompletion: { _ in }) { result in
-                self.forecast = result
+            .sink(receiveCompletion: { _ in }) { [weak self] result in
+                self?.forecast = result
             }
             .store(in: &bag)
     }
